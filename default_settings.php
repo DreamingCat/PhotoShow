@@ -1,6 +1,7 @@
 <?php
 /*
 *  Created by Thibaud Rohmer on 2010-12-26.
+*  Modified by Jocelyn Delalande, 2010
 */
 
 
@@ -21,6 +22,23 @@ $thumbdir	=	"./thumb/";
 // Max number of images per page
 $limit		=	25; 
 
+
+
+/******* Upload Settings *******/
+
+
+// These settings affect only the upload using the web interface
+
+// Allow to upload using the web interface (disabled since there is currently no auth)
+$allow_upload	=	false;
+
+// Resize the images before uploading them (client-side, if the browser supports it)
+$resize_images	=	true;
+
+// Resize parameters, (ignored if $resize_images is false)
+// - The quality is JPEG quality, between 0 (unviewable) to 100 (unwaitable)
+// - The image is resized only if bigger than this size (no upscaling)
+$resizeto	=	"{width : 800, height : 600, quality: 90}";
 
 
 

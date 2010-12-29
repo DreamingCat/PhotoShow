@@ -1,6 +1,11 @@
 <?php//-*- mode: c;tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t;-*- ?>
 <?php require_once('settings.php'); ?>
 
+<?php
+if (!$allow_upload) 
+	die('<p>Upload is not allowed, set $allow_upload to true in settings.php if you want to use it</p>');
+?>
+
 <html>
 <head>
 <!-- Load Queue widget CSS and jQuery -->
@@ -10,7 +15,6 @@
 
 <!-- Thirdparty intialization scripts, needed for the Google Gears and BrowserPlus runtimes -->
 <script type="text/javascript" src="plupload/js/gears_init.js"></script>
-<script type="text/javascript" src="http://bp.yahooapis.com/2.4.21/browserplus-min.js"></script>
 <script type="text/javascript" src="plupload/js/plupload.full.min.js"></script>
 <script type="text/javascript" src="plupload/src/javascript/plupload.html5.js"></script>
 <script type="text/javascript" src="plupload/js/jquery.plupload.queue.min.js"></script>
@@ -18,7 +22,11 @@
 
 <script type="text/javascript">
 // Make javascript aware of some of the PhotoShow settings 
-var settings = {dirname: '<?php echo $dirname ?>'};
+var settings = {
+	  dirname		: <?php echo "'".$dirname."'"	?>,
+	  resize_images : <?php echo $resize_images		?>,
+	  resizeto		: <?php echo $resizeto			?>
+};
 </script>
 
 <script type="text/javascript" src="upload.js"></script>

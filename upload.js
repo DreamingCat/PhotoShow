@@ -12,7 +12,7 @@ $(document).ready(function() {
 		unique_names : false,
 		
 		// Resize images on clientside if we can 
-		resize : {width : 800, height : 600, quality: 90},
+		resize : settings.resize_images ? settings.resizeto : false,
 		// Specify what files to browse for
 		filters : [
 			{title : "Image files", extensions : "jpg,gif,png"},
@@ -88,7 +88,7 @@ function selectAlbum(album) {
 }
 
 function setUploadFolder(uploader, folder) {
-	uploader.settings.url = backend_url + '?folder=' + folder; 
+	uploader.settings.url = backend_url + '?folder=' + folder;
 }
 
 function addNewFolder() {
