@@ -2,6 +2,7 @@
  * plupload.html5.js
  *
  * Copyright 2009, Moxiecode Systems AB
+ * modified by Jocelyn Delalande, 2010
  * Released under GPL License.
  *
  * License: http://www.plupload.com/license
@@ -41,7 +42,7 @@
 
 			// Load image
 			img = new Image();
-			img.onload = function() {
+			img.onload = function() {alert(data);
 				var width, height, percentage, APP1, parser;
 
 				scale = Math.min(max_width / img.width, max_height / img.height);
@@ -63,8 +64,8 @@
 					// Remove data prefix information and grab the base64 encoded data and decode it
 					if ((mime ==  'image/jpeg') && scale && use_purejs_jpeg) {
 						alert('quality to '+quality);
-						var myEncoder = new JPEGEncoder(quality);
-
+						var encoder = new JPEGEncoder(quality);
+						data = encoder.encode(context.getImageData(0, 0, width, height));
 						
 					} else {
 						/* Due to a bug, the call with 2 args will fail in Firefox
@@ -234,6 +235,14 @@
 					// Clearing the value enables the user to select the same file again if they want to
 					this.value = '';
 				};
+				
+				// Loads the js JPEG encoder if needed
+				if (uploader.settings.html5_use_purejs_jpeg) {
+					var e = document.createElement("script");
+					e.src = uploader.settings.html5_purejs_jpeg_url;
+					e.type = "text/javascript";
+					document.getElementsByTagName("head")[0].appendChild(e); 
+				}
 			});
 
 			// Add drop handler
@@ -510,8 +519,10 @@
 				if (features.jpgresize) {
 					// Resize image if it's a supported format and resize is enabled
 					if (resize && /\.(png|jpg|jpeg)$/i.test(file.name)) {
-						scaleImage(nativeFile, resize.width, resize.height, /\.png$/i.test(file.name) ? 'image/png' : 'image/jpeg', 
-								   resize.quality, up.settings.html5_use_purejs_jpeg, function(res) {
+						scaleImage(nativeFile, resize.width, resize.height, 
+								   /\.png$/i.test(file.name) ? 'image/png' : 'image/jpeg', 
+								   resize.quality, up.settings.html5_use_purejs_jpeg, 
+								   function(res) {
 							// If it was scaled send the scaled image if it failed then
 							// send the raw image and let the server do the scaling
 							if (res.success) {

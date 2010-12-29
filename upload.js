@@ -12,7 +12,7 @@ $(document).ready(function() {
 		unique_names : false,
 		
 		// Resize images on clientside if we can 
-		resize : {width : 800, height : 600, quality: 80},
+		resize : {width : 800, height : 600, quality: 90},
 		// Specify what files to browse for
 		filters : [
 			{title : "Image files", extensions : "jpg,gif,png"},
@@ -23,7 +23,15 @@ $(document).ready(function() {
 		flash_swf_url : 'plupload/js/plupload.flash.swf',
 		
 		// Silverlight settings
-		silverlight_xap_url : 'plupload/js/plupload.silverlight.xap'
+		silverlight_xap_url : 'plupload/js/plupload.silverlight.xap',
+
+		// HTML5 settings
+		/* Allows to set jpeg quality in mozilla but is slower
+		 * see https://bugzilla.mozilla.org/show_bug.cgi?id=531185
+		 * and http://www.bytestrom.eu/blog/2009/1120a_jpeg_encoder_for_javascript
+		 */
+		html5_use_purejs_jpeg : true,
+		html5_purejs_jpeg_url : 'plupload/src/javascript/jpeg_encoder_basic.js',
 	});
 	
 	// Client side form validation
