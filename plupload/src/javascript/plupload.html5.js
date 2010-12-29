@@ -42,7 +42,7 @@
 
 			// Load image
 			img = new Image();
-			img.onload = function() {alert(data);
+			img.onload = function() {
 				var width, height, percentage, APP1, parser;
 
 				scale = Math.min(max_width / img.width, max_height / img.height);

@@ -5,7 +5,7 @@ var backend_url = 'upload-backend.php';
 $(document).ready(function() {
 	$("#uploader").pluploadQueue({
 		// General settings
-		runtimes : 'gears,html5,flash,html4,gears,flash,silverlight,browserplus,html4',
+		runtimes : 'html5,flash,gears,html4',
 		url : backend_url,
 		max_file_size : '10mb',
 		chunk_size : '1mb',
@@ -32,6 +32,13 @@ $(document).ready(function() {
 		 */
 		html5_use_purejs_jpeg : true,
 		html5_purejs_jpeg_url : 'plupload/src/javascript/jpeg_encoder_basic.js',
+
+		preinit : function(up) {
+			up.bind('BeforeUpload', function(up, file) {
+				var selectedAlbum = $('.album.selected');
+				setUploadFolder(up, selectedAlbum.attr('title'));
+			});
+		}
 	});
 	
 	// Client side form validation
@@ -48,7 +55,6 @@ $(document).ready(function() {
 			alert('Select an album to upload your files');
 
 		} else {
-			
 		    setUploadFolder(uploader, selectedAlbum.attr('title'));
 			//console.log('uploader', uploader);
 			// Validate number of uploaded files
