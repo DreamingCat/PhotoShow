@@ -64,7 +64,7 @@ $(document).ready(function() {
 					// When all files are uploaded submit form
 					uploader.bind('UploadProgress', function() {
 						if (uploader.total.uploaded == uploader.files.length) {
-							//$('form').submit();
+							$('form').submit();
 						}
 					});
 
@@ -94,49 +94,45 @@ function setUploadFolder(uploader, folder) {
 function addNewFolder() {
 	var newFolder = $(
 		"<li class='folder editing'>"
-			+"<input type='text' class='album-name' value='New Folder name'/>"
-			+"<a href='#' class='addalbum hidden' onclick='addNewAlbum()'>Add album</a>"
+			+"<input type='text' class='folder-name' value='New Folder name'/>"
+			+"<a href='#' class='addalbum hidden' onclick='addNewAlbum();return false'>Add album</a>"
 			+"<ul class='albums'></ul>"
 		+"</li>");
 
 	$(this).before(newFolder);
-	console.log(newFolder);
 	
-	var input = $(newFolder[0].firstChild);
+	var input = newFolder.find('.folder-name');
 	input.select();
 	input.change(function() {
-		this.parentNode.title = encodeURI(settings.dirname 
-										  + '/' + this.value);
+		$(this).parents('.folder')[0].title =
+			encodeURI(settings.dirname + '/' + this.value);
 	});
 	input.keypress(function(e) {
 		$('.addalbum.hidden').show();
 		$(this).unbind(e)
 	});
-	// HERE: on first key press, makes the button for adding an album appear
-	// On that button press, make the input disapear.
 }
 
 function addNewAlbum() {
-	var relatedAlbum = $('.folder:has(a:hover)')[0];
-	var relatedList = $('.folder:has(a:hover) ul.albums');
-	var newAlbum = $("<li class='album'><input type='text' value='Enter album name'></li>'");
-
+	var relatedFolder = $('.folder:has(a:hover)');
+	var relatedFolderInput = (relatedFolder.find('.folder-name'))[0];
+	var relatedList = relatedFolder.find('ul.albums');
+	var newAlbum = $("<li class='album'><input type='text' class='album-name' value='Enter album name'></li>'");
 	// We make it impossible to modify the folder name from now
-	if ($(relatedAlbum).hasClass("editing")) {
-		$(relatedAlbum.firstChild).replaceWith(relatedAlbum.firstChild.value);
-		$(relatedAlbum).removeClass("editing");
+	if (relatedFolder.hasClass("editing")) {
+		$(relatedFolderInput).replaceWith(relatedFolderInput.value);
+		relatedFolder.removeClass("editing");
 	}
 
 	relatedList.append(newAlbum);
 	selectAlbum(newAlbum);
 	newAlbum.click(function(){selectAlbum(this)});
-	$(newAlbum[0].firstChild).select();
 
-	var input = $(newAlbum[0].firstChild);
-	console.log('input is ', input);
+	var input = newAlbum.find('input');
+	input.select();
+	
 	input.change(function() {
-		newAlbum[0].title = relatedAlbum.title + '/' + encodeURI(this.value);
-		console.log('changed', newAlbum[0].title);
+		newAlbum[0].title = relatedFolder[0].title + '/' + encodeURI(this.value);
 	});
 
 }
