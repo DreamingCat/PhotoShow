@@ -51,7 +51,6 @@ function validate_folder($folder) {
 			}
 		}
 	} else {
-		log_and_die('ids '.parentdir(parentdir($folder)).' '.fileinode($dirname));
 		log_and_die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Illegal destination folder, '
 					.$folder.' is not a child of '.$dirname.'"}, "id" : "id"}');
 	}

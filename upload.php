@@ -36,7 +36,7 @@ $dir = scandir(urldecode($dirname),1);
 for($i=0;$i<sizeof($dir);$i++) {
 	$subdirname=$dir[$i];
 	if($subdirname != '.' && $subdirname != '..' && is_dir($dirname.$subdirname)) {
-	  echo("<li class='folder' title='".urlencode($subdirname)."' >$subdirname"
+	  echo("<li class='folder' title='".urlencode($dirname).'/'.urlencode($subdirname)."' >$subdirname"
 		   ."<a href='#' class='addalbum' onclick='addNewAlbum()'>Add album</a>"
 		   ."<ul class='albums'>");
 	  
