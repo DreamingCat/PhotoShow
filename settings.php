@@ -6,7 +6,7 @@
 include "default_settings.php";
 
 // Edit your settings here.
-
+$allow_upload = true;
 
 
 ?>

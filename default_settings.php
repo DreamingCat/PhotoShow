@@ -40,7 +40,8 @@ $resize_images	=	true;
 // - The image is resized only if bigger than this size (no upscaling)
 $resizeto	=	"{width : 800, height : 600, quality: 90}";
 
-
+// Where are the files stored during the transfer ?
+$tmp_upload_dir = "/tmp/uploads";
 
 /******* Left Menu *******/
 

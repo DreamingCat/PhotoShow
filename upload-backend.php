@@ -1,6 +1,5 @@
 <?php //-*- mode: c;tab-width: 4; c-basic-offset: 4; indent-tabs-mode: t;-*-
   /**
-   * upload.php
    *
    * Copyright 2009, Moxiecode Systems AB
    * modified by Jocelyn Delalande, 2010
@@ -13,9 +12,12 @@
 require_once('settings.php');
 
 function log_and_die($msg) {
-	global $logFile;
+	/* Uncomment to log all request answers
+	$logFile = fopen("/tmp/plupload.log", 'a');
 	fwrite($logFile, $msg."\n");
 	fclose($logFile);
+	//*/
+
 	die($msg);
 }
 
@@ -58,19 +60,21 @@ function validate_folder($folder) {
 }
 
 
-if (!function_exists('apache_request_headers')) {
-	eval('
-        function apache_request_headers() {
-            foreach($_SERVER as $key=>$value) {
-                if (substr($key,0,5)=="HTTP_") {
-                    $key=str_replace(" ","-",ucwords(strtolower(str_replace("_"," ",substr($key,5)))));
-                    $out[$key]=$value;
-                }
-            }
-            return $out;
-        }
-    ');
- }
+
+function http_request_headers() {
+	foreach($_SERVER as $key=>$value) {
+		if (substr($key,0,5)=="HTTP_") {
+			$key=str_replace(" ","-",ucwords(strtolower(str_replace("_"," ",substr($key,5)))));
+			$out[$key]=$value;
+		}
+	}
+	return $out;
+}
+
+// Security check
+if (!$allow_upload) {
+	log_and_die('{"jsonrpc" : "2.0", "error" : {"code": -1, "message": "upload disabled"}, "id" : "id"}');
+}
 
 // HTTP headers for no cache etc
 header('Content-type: text/plain; charset=UTF-8');
@@ -80,17 +84,12 @@ header("Cache-Control: no-store, no-cache, must-revalidate");
 header("Cache-Control: post-check=0, pre-check=0", false);
 header("Pragma: no-cache");
 
-file_put_contents('/tmp/blah',var_export(apache_request_headers(), true).'\n'.var_export($_GET,true).'\n'.var_export($_POST,true));
+// Uncomment to log every the last request
+//file_put_contents('/tmp/last_plupload_req.log',var_export(apache_request_headers(), true).'\n'.var_export($_GET,true).'\n'.var_export($_POST,true));
 
 // Settings
-//$targetDir = $_SERVER['DOCUMENT_ROOT']."/tmp/uploads"; //temp directory <- need these to be variable
-$targetDir = "/tmp/uploads/"; //temp directory <- need these to be variable
 $cleanupTargetDir = true; // Remove old files
 $maxFileAge = 60 * 60; // Temp file age in seconds
-$logFileName = "/tmp/plupload.log";
-
-// Open log file
-$logFile = fopen($logFileName, 'a');
 
 // Get sanely the destination folder from  user request
 $finalDir  = validate_folder($_GET['folder']); //"/tmp/uploads2/"; //final directory <- need these to be variable
@@ -108,13 +107,13 @@ $fileName = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 $fileName = preg_replace('/[^\w\._]+/', '', $fileName);
 
 // Create target dir
-if (!file_exists($targetDir))
-	@mkdir($targetDir);
+if (!file_exists($tmp_upload_dir))
+	@mkdir($tmp_upload_dir);
 
 // Remove old temp files
-if (is_dir($targetDir) && ($dir = opendir($targetDir))) {
+if (is_dir($tmp_upload_dir) && ($dir = opendir($tmp_upload_dir))) {
 	while (($file = readdir($dir)) !== false) {
-		$filePath = $targetDir . DIRECTORY_SEPARATOR . $file;
+		$filePath = $tmp_upload_dir . DIRECTORY_SEPARATOR . $file;
 
 		// Remove temp files if they are older than the max age
 		if (preg_match('/\\.tmp$/', $file) && (filemtime($filePath) < time() - $maxFileAge))
@@ -135,7 +134,7 @@ if (isset($_SERVER["CONTENT_TYPE"]))
 if (strpos($contentType, "multipart") !== false) {
 	if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
 		// Open temp file
-		$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
+		$out = fopen($tmp_upload_dir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
 		if ($out) {
 			// Read binary input stream and append it to temp file
 			$in = fopen($_FILES['file']['tmp_name'], "rb");
@@ -154,7 +153,7 @@ if (strpos($contentType, "multipart") !== false) {
 		log_and_die('{"jsonrpc" : "2.0", "error" : {"code": 103, "message": "Failed to move uploaded file."}, "id" : "id"}');
  } else {
 	// Open temp file
-	$out = fopen($targetDir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
+	$out = fopen($tmp_upload_dir . DIRECTORY_SEPARATOR . $fileName, $chunk == 0 ? "wb" : "ab");
 	if ($out) {
 		// Read binary input stream and append it to temp file
 		$in = fopen("php://input", "rb");
@@ -173,9 +172,9 @@ if (strpos($contentType, "multipart") !== false) {
 		log_and_die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
 	}
  }
-//Moves the file from $targetDir to $finalDir after receiving the final chunk
+//Moves the file from $tmp_upload_dir to $finalDir after receiving the final chunk
 if($chunk == ($chunks-1)){
-	rename($targetDir . DIRECTORY_SEPARATOR . $fileName, $finalDir . DIRECTORY_SEPARATOR . $fileName);
+	rename($tmp_upload_dir . DIRECTORY_SEPARATOR . $fileName, $finalDir . DIRECTORY_SEPARATOR . $fileName);
 }
 
 // Return JSON-RPC response
