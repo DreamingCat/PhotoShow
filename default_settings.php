@@ -22,6 +22,12 @@ $thumbdir	=	"./thumb/";
 // Max number of images per page
 $limit		=	25; 
 
+// Website theme (design)   choices available :   black_knight   snow_white
+$theme		=	"black_knight";
+
+// Theme modification (only for snow_white at the moment)   choices available :   purple
+$mod		=	"";
+
 
 
 /******* Upload Settings *******/
@@ -42,6 +48,8 @@ $resizeto	=	"{width : 800, height : 600, quality: 90}";
 
 // Where are the files stored during the transfer ?
 $tmp_upload_dir = "/tmp/uploads";
+
+
 
 /******* Left Menu *******/
 
