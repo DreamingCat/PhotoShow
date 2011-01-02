@@ -3,8 +3,8 @@
 *  Created by Thibaud Rohmer on 2010-12-23.
 */
 
-include "functions.php";
-include "settings.php"; 
+require_once "functions.php";
+require_once "settings.php"; 
 
 ?>
 
@@ -18,7 +18,15 @@ include "settings.php";
 		<meta name="author" content="Thibaud Rohmer" >
 		<title><?php echo $title ?></title>
 		
-	<link href="stylesheet.css" rel="stylesheet" media="screen" type="text/css" >
+		<?php 
+		if(!is_dir("./stylesheets/$theme")) $theme="black_knight";
+		
+		echo("<link rel='stylesheet' href='stylesheets/$theme/basic.css' type='text/css' media='screen' title='no title' charset='utf-8'>\n");
+		
+		if(is_file("./stylesheets/$theme/basic.css"))
+			echo("<link rel='stylesheet' href='stylesheets/$theme/$mod.css' type='text/css' media='screen' title='no title' charset='utf-8'>\n");
+		
+		?>
 	
 	<script src='jQuery/jquery.min.js' type="text/javascript" charset="utf-8"></script>
 	<script src='jQuery/jquery-ui.min.js' type="text/javascript" charset="utf-8"></script>
@@ -27,7 +35,9 @@ include "settings.php";
 
 </head>
 <body>
-	<div id="fs"></div>
+	<div id="fs">
+		<div id="fs_img"></div>
+	</div>
 	<div id="wtf">
 		<div class="content">Aide</div>
 		<div class="bg"></div>
@@ -41,7 +51,7 @@ include "settings.php";
 <div id="wrapper" >
 	<div id="leftcolumn" >
 		<div id="accordion"  >
-			<?php include("folders.php"); ?>
+			<?php require "folders.php"; ?>
 		</div> 
 	</div>
 	<div id="exifdiv">
@@ -52,7 +62,8 @@ include "settings.php";
 		<div id="menubar" style="display:none;">
 			<?php menubar(); ?>			
 		</div>
-		<div id="projcontent" class="fullpage"></div>	
+		<div id="projcontent" class="fullpage">
+		</div>	
 		<div id="display2">
 			<div id="display_img">
 			</div>
