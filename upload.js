@@ -5,7 +5,7 @@ var backend_url = 'upload-backend.php';
 $(document).ready(function() {
 	$("#uploader").pluploadQueue({
 		// General settings
-		runtimes : 'html5,flash,gears,html4',
+		runtimes : 'flash,html5,flash,gears,html4',
 		url : backend_url,
 		max_file_size : '10mb',
 		chunk_size : '1mb',
@@ -13,6 +13,7 @@ $(document).ready(function() {
 		
 		// Resize images on clientside if we can 
 		resize : settings.resize_images ? settings.resizeto : false,
+
 		// Specify what files to browse for
 		filters : [
 			{title : "Image files", extensions : "jpg,gif,png"},
@@ -30,7 +31,7 @@ $(document).ready(function() {
 		 * see https://bugzilla.mozilla.org/show_bug.cgi?id=531185
 		 * and http://www.bytestrom.eu/blog/2009/1120a_jpeg_encoder_for_javascript
 		 */
-		html5_use_purejs_jpeg : true,
+		html5_use_purejs_jpeg : 'disabled',
 		html5_purejs_jpeg_url : 'plupload/src/javascript/jpeg_encoder_basic.js',
 
 		preinit : function(up) {

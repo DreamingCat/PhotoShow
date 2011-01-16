@@ -62,21 +62,33 @@
 					APP1 = parser.APP1({width: width, height: height});
 
 					// Remove data prefix information and grab the base64 encoded data and decode it
-					if ((mime ==  'image/jpeg') && scale && use_purejs_jpeg) {
-						alert('quality to '+quality);
-						var encoder = new JPEGEncoder(quality);
-						data = encoder.encode(context.getImageData(0, 0, width, height));
+					if (mime ==  'image/jpeg') {
+						if (use_purejs_jpeg == 'enabled') {
+							alert('enabled');
+							data = new JPEGEncoder(quality).encode(
+								context.getImageData(0, 0, width, height));
+						} else {
+							/* Due to a mozilla bug, the call with 2 args will fail in Firefox
+							 * see https://bugzilla.mozilla.org/show_bug.cgi?id=564388
+							 */
+							try {
+								// Suposed to work regarding spec:
+								data = canvas.toDataURL(mime, quality);
+							} catch(e) {
+								if (use_purejs_jpeg == 'fallback') {
+									alert('fallback');
+									data = new JPEGEncoder(quality).encode(context.getImageData(0, 0, width, height));
+								} else {
+									data = canvas.toDataURL(mime);
+									alert('normal');
+								}
+							}
+						}
 						
 					} else {
-						/* Due to a bug, the call with 2 args will fail in Firefox
-						 * see https://bugzilla.mozilla.org/show_bug.cgi?id=564388
-						 */
-						try {
-							data = canvas.toDataURL(mime, quality);
-						} catch(e) {
-							data = canvas.toDataURL(mime);
-						}
+						data = canvas.toDataURL(mime);
 					}
+
 					data = data.substring(data.indexOf('base64,') + 7);
 					data = atob(data);
 
@@ -236,8 +248,9 @@
 					this.value = '';
 				};
 				
-				// Loads the js JPEG encoder if needed
-				if (uploader.settings.html5_use_purejs_jpeg) {
+				// Load the js JPEG encoder if needed
+				if ((uploader.settings.html5_use_purejs_jpeg == 'enabled') || 
+					(uploader.settings.html5_use_purejs_jpeg == 'fallback')) {
 					var e = document.createElement("script");
 					e.src = uploader.settings.html5_purejs_jpeg_url;
 					e.type = "text/javascript";

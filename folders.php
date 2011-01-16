@@ -9,8 +9,8 @@ if(!isset($_SESSION["logged"])){
 }
 
 
-include "settings.php";
-$dir 	=	scandir(urldecode($dirname),1); 
+require_once "settings.php";
+$dir 	=	scandir(urldecode($dirname)); 
 
 // Generated folders
 if($by_age_all || $by_age_albums || $random_all || $random_albums || is_dir($virtual))
@@ -115,9 +115,9 @@ if($real_albums)
 						<li 
 						class='album' 
 						title='".urlencode($dirname).urlencode($subdirname)."/".urlencode($file)."/'
-						>
-						".$myname."
-						<div class='countfloat'><span class='count'>".$count."</span></div>
+						><div class='folder_name'>
+						".$myname."</div>
+						<div class='count'>".$count."</div>
 						</li>");
 				}
 			}

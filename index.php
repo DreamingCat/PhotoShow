@@ -3,8 +3,8 @@
 *  Created by Thibaud Rohmer on 2010-12-23.
 */
 
-include "functions.php";
-include "settings.php"; 
+require_once "functions.php";
+require_once "settings.php"; 
 
 ?>
 
@@ -30,6 +30,8 @@ include "settings.php";
 	
 	<script src='jQuery/jquery.min.js' type="text/javascript" charset="utf-8"></script>
 	<script src='jQuery/jquery-ui.min.js' type="text/javascript" charset="utf-8"></script>
+	<script src="jQuery/jquery.scrollTo.js" type="text/javascript" charset="utf-8"></script>
+	<script src="jQuery/jquery.mousewheel.js" type="text/javascript" charset="utf-8"></script>
 
 	<script src="scripts.js" type="text/javascript" charset="utf-8"></script>
 
@@ -51,7 +53,7 @@ include "settings.php";
 <div id="wrapper" >
 	<div id="leftcolumn" >
 		<div id="accordion"  >
-			<?php include("folders.php"); ?>
+			<?php require "folders.php"; ?>
 		</div> 
 	</div>
 	<div id="exifdiv">
