@@ -10,7 +10,6 @@
 
 <!-- Thirdparty intialization scripts, needed for the Google Gears and BrowserPlus runtimes -->
 <script type="text/javascript" src="plupload/js/gears_init.js"></script>
-<script type="text/javascript" src="http://bp.yahooapis.com/2.4.21/browserplus-min.js"></script>
 <script type="text/javascript" src="plupload/js/plupload.full.min.js"></script>
 <script type="text/javascript" src="plupload/src/javascript/plupload.html5.js"></script>
 <script type="text/javascript" src="plupload/js/jquery.plupload.queue.min.js"></script>
